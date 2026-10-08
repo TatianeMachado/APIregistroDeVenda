@@ -14,8 +14,13 @@ public class ItemVenda
     public int ProdutoId { get; set; }
     public Produto? Produto { get; set; }
 
+    [Range(1, int.MaxValue,
+      ErrorMessage = "A quantidade deve ser maior que zero.")]
     public int Quantidade { get; set; }
 
     [Column(TypeName = "decimal(10,2)")]
+    [Range(typeof(decimal), "0.01", "99999999.99",
+    ErrorMessage = "O preço unitário deve estar entre 0,01 e 99.999.999,99.")]
+    
     public decimal PrecoUnitario { get; set; }
 }
