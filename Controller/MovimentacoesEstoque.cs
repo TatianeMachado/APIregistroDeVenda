@@ -6,7 +6,7 @@ namespace APIregistroDeVenda.Controller;
 
 [ApiController]
 [Route("api/movimentacoes-estoque")]
-public class MovimentacoesEstoque: ControllerBase
+public class MovimentacoesEstoque : ControllerBase
 {
     private readonly MovimentacaoEstoqueService _service;
 
@@ -56,17 +56,30 @@ public class MovimentacoesEstoque: ControllerBase
         }
     }
 
-    [HttpPut("{id:int}")]
+    [HttpPut("{id}")]
     public async Task<ActionResult<MovimentacaoEstoqueResponse>> Atualizar(
-    int id,
-    [FromBody] MovimentacaoEstoqueAtualizarRequest request)
+     [FromRoute] int id,
+     [FromBody] MovimentacaoEstoqueAtualizarRequest request)
     {
+        if (id <= 0)
+        {
+            return BadRequest(new
+            {
+                mensagem = "O ID deve ser um número inteiro maior que zero."
+            });
+        }
+
         try
         {
             var resultado = await _service.AtualizarAsync(id, request);
 
             if (resultado is null)
-                return NotFound(new { mensagem = "Movimentação não encontrada." });
+            {
+                return NotFound(new
+                {
+                    mensagem = "Movimentação não encontrada."
+                });
+            }
 
             return Ok(resultado);
         }
@@ -98,10 +111,18 @@ public class MovimentacoesEstoque: ControllerBase
     {
         return Ok(await _service.ConsultarAsync());
     }
-    [HttpGet("{id:int}")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<MovimentacaoEstoqueResponse>> ConsultarPorId(
-    int id)
+    [FromRoute] int id)
     {
+        if (id <= 0)
+        {
+            return BadRequest(new
+            {
+                mensagem = "O ID deve ser um número inteiro maior que zero."
+            });
+        }
+
         var resultado = await _service.ConsultarPorIdAsync(id);
 
         if (resultado is null)
@@ -115,12 +136,20 @@ public class MovimentacoesEstoque: ControllerBase
         return Ok(resultado);
     }
 
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Excluir(int id)
+    public async Task<IActionResult> Excluir([FromRoute] int id)
     {
+        if (id <= 0)
+        {
+            return BadRequest(new
+            {
+                mensagem = "O ID deve ser um número inteiro maior que zero."
+            });
+        }
+
         try
         {
             bool excluiu = await _service.ExcluirAsync(id);
@@ -143,4 +172,5 @@ public class MovimentacoesEstoque: ControllerBase
             });
         }
     }
+
 }
