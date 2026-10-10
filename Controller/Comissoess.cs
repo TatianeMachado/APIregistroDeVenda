@@ -31,64 +31,72 @@ public class Comissoes : ControllerBase
     [HttpGet]
     public async Task<ActionResult<VendasResponse>> Consultar()
     {
-        var resultado = await _service.ListarVendasAsync();
-
-        return Ok(resultado);
+        return Ok(await _service.ListarVendasAsync());
     }
 
     [HttpGet("faixas")]
-    public async Task<ActionResult<List<ComissaoFaixaResponse>>> ConsultarPorFaixa()
+    public async Task<ActionResult<List<ComissaoFaixaResponse>>>
+        ConsultarPorFaixa()
     {
-        var resultado = await _service.ConsultarPorFaixaAsync();
-
-        return Ok(resultado);
+        return Ok(await _service.ConsultarPorFaixaAsync());
     }
-    [HttpGet("{id:int}")]
+
+    [HttpGet("{id}")]
     public async Task<ActionResult<VendaComissaoResponse>> ConsultarPorId(
-    int id)
+        [FromRoute] int id)
     {
+        if (id <= 0)
+        {
+            return BadRequest(new
+            {
+                mensagem = "O ID deve ser um número inteiro maior que zero."
+            });
+        }
+
         var resultado = await _service.ConsultarPorIdAsync(id);
 
         if (resultado is null)
-        {
-            return NotFound(new
-            {
-                mensagem = "Venda não encontrada."
-            });
-        }
+            return NotFound(new { mensagem = "Venda não encontrada." });
 
         return Ok(resultado);
     }
-    [HttpPut("{id:int}")]
+
+    [HttpPut("{id}")]
     public async Task<ActionResult<VendaComissaoResponse>> Atualizar(
-    int id,
-    [FromBody] VendaComissaoAtualizarRequest request)
+        [FromRoute] int id,
+        [FromBody] VendaComissaoAtualizarRequest request)
     {
+        if (id <= 0)
+        {
+            return BadRequest(new
+            {
+                mensagem = "O ID deve ser um número inteiro maior que zero."
+            });
+        }
+
         var resultado = await _service.AtualizarAsync(id, request);
 
         if (resultado is null)
-        {
-            return NotFound(new
-            {
-                mensagem = "Venda não encontrada."
-            });
-        }
+            return NotFound(new { mensagem = "Venda não encontrada." });
 
         return Ok(resultado);
     }
 
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Excluir(int id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Excluir([FromRoute] int id)
     {
+        if (id <= 0)
+        {
+            return BadRequest(new
+            {
+                mensagem = "O ID deve ser um número inteiro maior que zero."
+            });
+        }
+
         bool excluiu = await _service.ExcluirAsync(id);
 
         if (!excluiu)
-        {
-            return NotFound(new
-            {
-                mensagem = "Venda não encontrada."
-            });
-        }
+            return NotFound(new { mensagem = "Venda não encontrada." });
 
         return NoContent();
     }
