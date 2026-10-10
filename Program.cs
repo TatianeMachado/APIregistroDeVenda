@@ -1,4 +1,5 @@
 using APIregistroDeVenda.Context;
+using APIregistroDeVenda.Service;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,13 @@ builder.Services.AddSwaggerGen();
 
 var mysqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(mysqlConnection, ServerVersion.AutoDetect(mysqlConnection)));
+
+
+builder.Services.AddScoped<ComissaoService>();
+builder.Services.AddScoped<MovimentacaoEstoqueService>();
+builder.Services.AddScoped<JurosService>();
+
+
 
 var app = builder.Build();
 

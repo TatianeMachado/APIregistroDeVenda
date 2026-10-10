@@ -2,14 +2,11 @@
 
 namespace APIregistroDeVenda.DTO;
 
-public class VendaComissaoRequest
+public class VendaComissaoAtualizarRequest
 {
     [Required(ErrorMessage = "O vendedor é obrigatório.")]
     public string? Vendedor { get; set; }
 
     [Required(ErrorMessage = "O valor é obrigatório.")]
-    [Range(typeof(decimal), "0.01", "99999999.99",
-        ParseLimitsInInvariantCulture = true,
-        ErrorMessage = "O valor da venda deve estar entre 0,01 e 99.999.999,99.")]
     public decimal? Valor { get; set; }
 }

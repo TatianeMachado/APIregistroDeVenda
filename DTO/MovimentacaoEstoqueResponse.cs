@@ -11,6 +11,7 @@ public class MovimentacaoEstoqueResponse
     public TipoMovimentacao Tipo { get; set; }
 
     public string Descricao { get; set; } = string.Empty;
+    public string DescricaoProduto { get; set; } = string.Empty;
 
     public int Quantidade { get; set; }
 
